@@ -48,7 +48,7 @@ The SDXL base model performs significantly better than the previous variants, an
 
 ### 🧨 Diffusers 
 
-Make sure to upgrade diffusers to >= 0.18.0:
+Make sure to upgrade diffusers to >= 0.19.0:
 ```
 pip install diffusers --upgrade
 ```
@@ -58,7 +58,8 @@ In addition make sure to install `transformers`, `safetensors`, `accelerate` as 
 pip install invisible_watermark transformers accelerate safetensors
 ```
 
-You can use the model then as follows
+To just use the base model, you can run:
+
 ```py
 from diffusers import DiffusionPipeline
 import torch
@@ -74,6 +75,48 @@ prompt = "An astronaut riding a green horse"
 images = pipe(prompt=prompt).images[0]
 ```
 
+To use the whole base + refiner pipeline as an ensemble of experts you can run:
+
+```py
+from diffusers import DiffusionPipeline
+import torch
+
+# load both base & refiner
+base = DiffusionPipeline.from_pretrained(
+    "stabilityai/stable-diffusion-xl-base-1.0", torch_dtype=torch.float16, variant="fp16", use_safetensors=True
+)
+base.to("cuda")
+refiner = DiffusionPipeline.from_pretrained(
+    "stabilityai/stable-diffusion-xl-refiner-1.0",
+    text_encoder_2=base.text_encoder_2,
+    vae=base.vae,
+    torch_dtype=torch.float16,
+    use_safetensors=True,
+    variant="fp16",
+)
+refiner.to("cuda")
+
+# Define how many steps and what % of steps to be run on each experts (80/20) here
+n_steps = 40
+high_noise_frac = 0.8
+
+prompt = "A majestic lion jumping from a big stone at night"
+
+# run both experts
+image = base(
+    prompt=prompt,
+    num_inference_steps=n_steps,
+    denoising_end=high_noise_frac,
+    output_type="latent",
+).images
+image = refiner(
+    prompt=prompt,
+    num_inference_steps=n_steps,
+    denoising_start=high_noise_frac,
+    image=image,
+).images[0]
+```
+
 When using `torch >= 2.0`, you can improve the inference speed by 20-30% with torch.compile. Simple wrap the unet with torch compile before running the pipeline:
 ```py
 pipe.unet = torch.compile(pipe.unet, mode="reduce-overhead", fullgraph=True)
@@ -86,6 +129,58 @@ instead of `.to("cuda")`:
 - pipe.to("cuda")
 + pipe.enable_model_cpu_offload()
 ```
+
+For more information on how to use Stable Diffusion XL with `diffusers`, please have a look at [the Stable Diffusion XL Docs](https://huggingface.co/docs/diffusers/api/pipelines/stable_diffusion/stable_diffusion_xl).
+
+### Optimum
+[Optimum](https://github.com/huggingface/optimum) provides a Stable Diffusion pipeline compatible with both [OpenVINO](https://docs.openvino.ai/latest/index.html) and [ONNX Runtime](https://onnxruntime.ai/).
+
+#### OpenVINO
+
+To install Optimum with the dependencies required for OpenVINO :
+
+```bash
+pip install optimum[openvino]
+```
+
+To load an OpenVINO model and run inference with OpenVINO Runtime, you need to replace `StableDiffusionXLPipeline` with Optimum `OVStableDiffusionXLPipeline`. In case you want to load a PyTorch model and convert it to the OpenVINO format on-the-fly, you can set `export=True`.
+
+```diff
+- from diffusers import StableDiffusionPipeline
++ from optimum.intel import OVStableDiffusionPipeline
+
+model_id = "stabilityai/stable-diffusion-xl-base-1.0"
+- pipeline = StableDiffusionPipeline.from_pretrained(model_id)
++ pipeline = OVStableDiffusionPipeline.from_pretrained(model_id)
+prompt = "A majestic lion jumping from a big stone at night"
+image = pipeline(prompt).images[0]
+```
+
+You can find more examples (such as static reshaping and model compilation) in optimum [documentation](https://huggingface.co/docs/optimum/main/en/intel/inference#stable-diffusion-xl).
+
+
+#### ONNX
+
+To install Optimum with the dependencies required for ONNX Runtime inference :
+
+```bash
+pip install optimum[onnxruntime]
+```
+
+To load an ONNX model and run inference with ONNX Runtime, you need to replace `StableDiffusionXLPipeline` with Optimum `ORTStableDiffusionXLPipeline`. In case you want to load a PyTorch model and convert it to the ONNX format on-the-fly, you can set `export=True`.
+
+```diff
+- from diffusers import StableDiffusionPipeline
++ from optimum.onnxruntime import ORTStableDiffusionPipeline
+
+model_id = "stabilityai/stable-diffusion-xl-base-1.0"
+- pipeline = StableDiffusionPipeline.from_pretrained(model_id)
++ pipeline = ORTStableDiffusionPipeline.from_pretrained(model_id)
+prompt = "A majestic lion jumping from a big stone at night"
+image = pipeline(prompt).images[0]
+```
+
+You can find more examples in optimum [documentation](https://huggingface.co/docs/optimum/main/en/onnxruntime/usage_guides/models#stable-diffusion-xl).
 
 
 ## Uses
