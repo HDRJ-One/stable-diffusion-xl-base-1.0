@@ -3,6 +3,12 @@ license: openrail++
 tags:
 - text-to-image
 - stable-diffusion
+datasets:
+- Salesforce/dialogstudio
+metrics:
+- bleu
+library_name: flair
+pipeline_tag: text-classification
 ---
 # SD-XL 1.0-base Model Card
 ![row01](01.png)
