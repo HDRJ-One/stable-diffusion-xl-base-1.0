@@ -4,7 +4,7 @@ tags:
 - text-to-image
 - stable-diffusion
 ---
-# SD-XL 1.0-base Model Card
+# SD-XL 1.0- Model Card
 ![row01](01.png)
 
 ## Model
