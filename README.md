@@ -3,6 +3,14 @@ license: openrail++
 tags:
 - text-to-image
 - stable-diffusion
+datasets:
+- absinc/stable-anime
+language:
+- en
+metrics:
+- character
+library_name: asteroid
+pipeline_tag: text-to-speech
 ---
 # SD-XL 1.0-base Model Card
 ![row01](01.png)
