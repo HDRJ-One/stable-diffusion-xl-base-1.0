@@ -3,6 +3,8 @@ license: openrail++
 tags:
 - text-to-image
 - stable-diffusion
+language:
+- tr
 ---
 # SD-XL 1.0-base Model Card
 ![row01](01.png)
