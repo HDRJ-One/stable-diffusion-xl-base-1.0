@@ -3,6 +3,10 @@ license: openrail++
 tags:
 - text-to-image
 - stable-diffusion
+datasets:
+- fka/awesome-chatgpt-prompts
+metrics:
+- accuracy
 ---
 # SD-XL 1.0-base Model Card
 ![row01](01.png)
