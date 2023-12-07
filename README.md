@@ -3,6 +3,8 @@ license: openrail++
 tags:
 - text-to-image
 - stable-diffusion
+datasets:
+- prompthero-diffusion-models/anyataylorjoy
 ---
 # SD-XL 1.0-base Model Card
 ![row01](01.png)
