@@ -3,6 +3,29 @@ license: openrail++
 tags:
 - text-to-image
 - stable-diffusion
+datasets:
+- teknium/OpenHermes-2.5
+- fka/awesome-chatgpt-prompts
+language:
+- aa
+- ab
+- ae
+- af
+- be
+- ak
+- am
+- an
+- ar
+- as
+- av
+- ay
+- az
+- ba
+metrics:
+- accuracy
+- bertscore
+library_name: adapter-transformers
+pipeline_tag: translation
 ---
 # SD-XL 1.0-base Model Card
 ![row01](01.png)
