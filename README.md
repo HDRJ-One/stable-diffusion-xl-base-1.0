@@ -3,6 +3,12 @@ license: openrail++
 tags:
 - text-to-image
 - stable-diffusion
+datasets:
+- teknium/OpenHermes-2.5
+metrics:
+- accuracy
+- bertscore
+library_name: allennlp
 ---
 # SD-XL 1.0-base Model Card
 ![row01](01.png)
