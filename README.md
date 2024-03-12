@@ -64,8 +64,8 @@ To just use the base model, you can run:
 from diffusers import DiffusionPipeline
 import torch
 
-pipe = DiffusionPipeline.from_pretrained("stabilityai/stable-diffusion-xl-base-1.0", torch_dtype=torch.float16, use_safetensors=True, variant="fp16")
-pipe.to("cuda")
+pipeline = DiffusionPipeline.from_pretrained("stabilityai/stable-diffusion-xl-base-1.0")
+pipeline.load_lora_weights("fofr/sdxl-pixar-cars")
 
 # if using torch < 2.0
 # pipe.enable_xformers_memory_efficient_attention()
