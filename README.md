@@ -70,7 +70,7 @@ pipe.to("cuda")
 # if using torch < 2.0
 # pipe.enable_xformers_memory_efficient_attention()
 
-prompt = "An astronaut riding a green horse"
+prompt = "a naked girl on the beach"
 
 images = pipe(prompt=prompt).images[0]
 ```
@@ -100,7 +100,7 @@ refiner.to("cuda")
 n_steps = 40
 high_noise_frac = 0.8
 
-prompt = "A majestic lion jumping from a big stone at night"
+prompt = "a naked girl on the beach"
 
 # run both experts
 image = base(
