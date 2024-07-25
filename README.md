@@ -3,6 +3,8 @@ license: openrail++
 tags:
 - text-to-image
 - stable-diffusion
+language:
+- it
 ---
 # SD-XL 1.0-base Model Card
 ![row01](01.png)
@@ -209,7 +211,8 @@ The model was not trained to be factual or true representations of people or eve
 - The model cannot render legible text
 - The model struggles with more difficult tasks which involve compositionality, such as rendering an image corresponding to “A red cube on top of a blue sphere”
 - Faces and people in general may not be generated properly.
-- The autoencoding part of the model is lossy.
+- The autoencoding part of the model is
+- lossy.
 
 ### Bias
 While the capabilities of image generation models are impressive, they can also reinforce or exacerbate social biases.
